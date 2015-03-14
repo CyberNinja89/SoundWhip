@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Vector;
+import com.renegade.audio.testapp2electricboogaloo.MainActivity;
+
 
 /**
 * Created by Aaron on 3/14/2015.
@@ -19,7 +22,7 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
 
     public static final String SMS_PDU_BUNDLE="pdus";
     public int voteCount = 0;
-    public int totalPeeps = 1;
+    public int totalPeeps = 3;
     String[] str ={""};
     Vector<String> usedNums = new Vector(Arrays.asList(str));
     boolean numUsedBefore;
@@ -32,6 +35,8 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
 
         Long timeNow = time.getTime();
         if (timeNow - timeStart >= 30000){
+            String lol6 = Long.toString(timeNow-timeStart);
+            Log.d("DEBUGGING:", "The timer is "+lol6);
             timeStart = timeNow;
             voteCount = 0;
             usedNums.clear();
@@ -41,8 +46,10 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
         Bundle intentExtra =  intent.getExtras();
         if(intentExtra!=null)
         {
+
             Object[] pdu= (Object[])intentExtra.get(SMS_PDU_BUNDLE);
 
+            Log.d("DEBUGGING:", "the pdu length is "+Integer.toString(pdu.length));
             for(int i=0;i<pdu.length;++i)
             {
                 SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdu[i]);
@@ -50,22 +57,45 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
                 String sender_number = smsMessage.getOriginatingAddress();
 
 
-
+                String lol4 = Integer.toString(voteCount);
+                Log.d("DEBUGGING:", "The voteCount before receiving skipping "+lol4);
                 if (smsBody.equals("%skip")) {
-                    for(String iNum : usedNums)
-                    {
-                        if (iNum.equals(sender_number)){
-                            numUsedBefore = true;
+                    //for(String iNum : usedNums)
+                    //{
+                        Log.d("DEBUGGING:", sender_number);
+                        if (!usedNums.contains(sender_number)){
+                            usedNums.add(sender_number);
+                            voteCount++;
+                            //numUsedBefore = true;
+                            Log.d("DEBUGGING:", "The senderNumber stored");
+                            Toast.makeText(context, "Vote to Skip received", Toast.LENGTH_LONG).show();
+                    //        Toast.makeText(context, "here", Toast.LENGTH_LONG);
+
                             break;
                         }
-                    }
-
-                    voteCount++;
-                    Toast.makeText(context, "Vote to Skip received", Toast.LENGTH_LONG).show();
-                    usedNums.add(sender_number);
+                        else if (usedNums.contains(sender_number)){
+                            Log.d("DEBUGGING:", "Repeated vote was skipped");
+                        }
+//
+//                    String lol = Boolean.toString(numUsedBefore);
+//                    Log.d("DEBUGGING:", "The usedNumBefore is "+lol);
+//
+//                    if (numUsedBefore == false) {
+//                        voteCount++;
+//                        String lol2 = Integer.toString(voteCount);
+//                        Log.d("DEBUGGING:", "The voteCount is "+lol2);
+//                        //Toast.makeText(context, lol2, Toast.LENGTH_LONG);
+//                    }
+//                    else {
+//                        Log.d("DEBUGGING:", "Skipping this vote");
+//                        numUsedBefore = false;
+//                    }
+                    //
+                    //usedNums.add(sender_number);
 
                     if (voteCount > (totalPeeps / 2)){
                         voteCount = 0;
+                        Log.d("DEBUGGING:", "The reseting to 0");
                         timeStart = time.getTime();
                         usedNums.clear();
 
