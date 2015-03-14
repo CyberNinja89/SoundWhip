@@ -20,14 +20,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver
-            android:name="com.renegade.audio.testapp2electricboogaloo.SmsBroadCastReceiver"
+            android:name=".SmsBroadCastReceiver"
             android:exported="true" >
             <intent-filter android:priority="999" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-                <action android:name="com.renegade.audio.testapp2electricboogaloo.OrderedBroadcast"/>
+                <action android:name="com.renegade.audio.testapp2electricboogaloo.OrderedBroadcast" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".MyIntentService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

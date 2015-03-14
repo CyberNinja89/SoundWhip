@@ -1,6 +1,5 @@
 package com.renegade.audio.testapp2electricboogaloo;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,12 +10,11 @@ import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.SimpleTimeZone;
 import java.util.Vector;
 
 /**
- * Created by Aaron on 3/14/2015.
- */
+* Created by Aaron on 3/14/2015.
+*/
 public class SmsBroadCastReceiver extends BroadcastReceiver {
 
     public static final String SMS_PDU_BUNDLE="pdus";
@@ -44,14 +42,13 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
         if(intentExtra!=null)
         {
             Object[] pdu= (Object[])intentExtra.get(SMS_PDU_BUNDLE);
-            String smsReceivedString="";
+
             for(int i=0;i<pdu.length;++i)
             {
                 SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdu[i]);
                 String smsBody = smsMessage.getMessageBody().toString();
                 String sender_number = smsMessage.getOriginatingAddress();
-                smsReceivedString +="SMS received from "+sender_number+"\n";
-                smsReceivedString+=smsBody+"\n";
+
 
 
                 if (smsBody.equals("%skip")) {
@@ -83,13 +80,8 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
                     }
                 }
             }
-
-            Toast.makeText(context, smsReceivedString, Toast.LENGTH_LONG).show();
-            MainActivity inst = MainActivity.instance;
-            inst.updatelist(smsReceivedString);
         }
 
     }
-
 
 }
