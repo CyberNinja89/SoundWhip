@@ -12,7 +12,6 @@ import android.widget.Toast;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Vector;
-import com.renegade.audio.testapp2electricboogaloo.MainActivity;
 
 
 /**
@@ -21,24 +20,31 @@ import com.renegade.audio.testapp2electricboogaloo.MainActivity;
 public class SmsBroadCastReceiver extends BroadcastReceiver {
 
     public static final String SMS_PDU_BUNDLE="pdus";
-    public int voteCount = 0;
-    public int totalPeeps = 3;
+    public static int voteCount = 0;
+    public int totalPeeps = 5;
     String[] str ={""};
     Vector<String> usedNums = new Vector(Arrays.asList(str));
     boolean numUsedBefore;
     Date time = new Date();
     Long timeStart =  time.getTime();
 
+    public void addVote(){
+        voteCount++;
+    }
+    public void reset(){
+        voteCount = 0;
+    }
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        Log.d("Debug","Started from the bottom \n");
 
         Long timeNow = time.getTime();
         if (timeNow - timeStart >= 30000){
             String lol6 = Long.toString(timeNow-timeStart);
             Log.d("DEBUGGING:", "The timer is "+lol6);
             timeStart = timeNow;
-            voteCount = 0;
+           // voteCount = 0;
+            reset();
             usedNums.clear();
 
         }
@@ -49,10 +55,11 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
 
             Object[] pdu= (Object[])intentExtra.get(SMS_PDU_BUNDLE);
 
+
             Log.d("DEBUGGING:", "the pdu length is "+Integer.toString(pdu.length));
-            for(int i=0;i<pdu.length;++i)
-            {
-                SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdu[i]);
+           // for(int i=0;i<Sms.length;++i)
+            //{
+                SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdu[0]);
                 String smsBody = smsMessage.getMessageBody().toString();
                 String sender_number = smsMessage.getOriginatingAddress();
 
@@ -65,13 +72,14 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
                         Log.d("DEBUGGING:", sender_number);
                         if (!usedNums.contains(sender_number)){
                             usedNums.add(sender_number);
-                            voteCount++;
+                            //voteCount++;
+                            addVote();
                             //numUsedBefore = true;
                             Log.d("DEBUGGING:", "The senderNumber stored");
                             Toast.makeText(context, "Vote to Skip received", Toast.LENGTH_LONG).show();
                     //        Toast.makeText(context, "here", Toast.LENGTH_LONG);
 
-                            break;
+                           // break;
                         }
                         else if (usedNums.contains(sender_number)){
                             Log.d("DEBUGGING:", "Repeated vote was skipped");
@@ -94,7 +102,8 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
                     //usedNums.add(sender_number);
 
                     if (voteCount > (totalPeeps / 2)){
-                        voteCount = 0;
+                        //voteCount = 0;
+                        reset();
                         Log.d("DEBUGGING:", "The reseting to 0");
                         timeStart = time.getTime();
                         usedNums.clear();
@@ -109,7 +118,8 @@ public class SmsBroadCastReceiver extends BroadcastReceiver {
                         }
                     }
                 }
-            }
+            //}
+            Log.d("Debug","Now We are here. \n");
         }
 
     }
