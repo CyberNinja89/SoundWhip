@@ -19,7 +19,7 @@
 
         <EditText
             android:layout_width="300dp"
-            android:layout_height="150dp"
+            android:layout_height="125dp"
             android:inputType="number"
             android:ems="10"
             android:id="@+id/numPeople"
@@ -28,7 +28,9 @@
             android:background="#FFFFFF"
             android:autoText="true"
             android:layout_marginTop="30dp"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="70dp"
+            android:text="    5" />
     </LinearLayout>
 
     <Button
@@ -37,7 +39,7 @@
     android:text="@string/Start"
     android:id="@+id/button"
     android:layout_gravity="top|center_horizontal"
-    android:layout_weight="0.50"
+    android:layout_weight="0.26"
     android:background="#782F40"
     android:textColor="#FFFFFF"
     android:layout_margin="8dp"
